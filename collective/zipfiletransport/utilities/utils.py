@@ -77,7 +77,7 @@ class ZipFileTransportUtility(SimpleItem):
             within a ZODB hierarchy.
         """
         self.bad_folders = []
-        zf=ZipFile(file, 'r')
+        zf=ZipFile(file, 'r', allowZip64=True)
         files = [file.filename for file in zf.filelist]
 
         if len(files) < 1:
@@ -334,7 +334,7 @@ class ZipFileTransportUtility(SimpleItem):
             tfile = path
             close(fd)
 
-        zipFile =  ZipFile(tfile, 'w', ZIP_DEFLATED)
+        zipFile =  ZipFile(tfile, 'w', ZIP_DEFLATED, allowZip64=True)
         context_path = str(context.virtual_url_path())
 
         for obj in objects_listing:
@@ -491,7 +491,7 @@ class ZipFileTransportUtility(SimpleItem):
     def getZipFilenames(self, zfile):
          """ Gets a list of filenames in the Zip archive."""
          try:
-             f = ZipFile(zfile)
+             f = ZipFile(zfile, allowZip64=True)
          except error:
              return []
          if f:
@@ -503,7 +503,7 @@ class ZipFileTransportUtility(SimpleItem):
          """ Gets info about the files in a Zip archive.
          """
          mt = self.mimetypes_registry
-         f = ZipFile(zfile)
+         f = ZipFile(zfile, allowZip64=True)
          fileinfo = []
          for x in f.infolist():
              fileinfo.append((x.filename,
@@ -515,7 +515,7 @@ class ZipFileTransportUtility(SimpleItem):
 	""" Gets a file from the Zip archive.
         """
         mt = self.mimetypes_registry
-        f = ZipFile(zfile)
+        f = ZipFile(zfile, allowZip64=True)
         finfo = f.getinfo(filename)
         fn = split(finfo.filename)[1] # Get the file name
         path = fn.replace('\\', '/')
